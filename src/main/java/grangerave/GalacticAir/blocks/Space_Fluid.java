@@ -25,8 +25,8 @@ public class Space_Fluid extends BlockFluidClassic implements IOxygenReliantBloc
 
 	public Space_Fluid(Fluid fluid, Material material) {
 		super(fluid, material);
-		setCreativeTab(CreativeTabs.tabMisc);
-		this.setBlockName("Space " + fluid.getName());
+		//setCreativeTab(CreativeTabs.tabMisc);
+		this.setBlockName("galacticair.Space" + fluid.getName());
 		setTickRandomly(true);
 	}
 	
@@ -151,6 +151,7 @@ public class Space_Fluid extends BlockFluidClassic implements IOxygenReliantBloc
 	}
 	
 	private void destroyFx(World world,int x, int y, int z,int num){
+		//spawn a poof of particles client side
 		if(world.isRemote){//client side only
 			for (int l = 0; l < num; ++l)
 	        {

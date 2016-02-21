@@ -9,6 +9,7 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
+import net.minecraftforge.event.terraingen.SaplingGrowTreeEvent;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -18,7 +19,7 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 
-public class PlayerInteractEventHandler {
+public class GalacticAirEventHandler {
 
 	private int[] map = new int[]{-1,1,-1,1,-1,1};
 	private int[] indx = new int[]{1,1,2,2,0,0};
@@ -46,8 +47,9 @@ public class PlayerInteractEventHandler {
 		return;
 	}
 	
-	/* Gets called on right click. Checks if item is bonemeal, and cancels event if so 
+	/* Gets called on bonemeal event. Checks if item is bonemeal, and cancels event if so 
 	*/
+	/*
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void NoBonemeal(BonemealEvent event){
 		//early out if not in galacticraft world
@@ -60,6 +62,23 @@ public class PlayerInteractEventHandler {
         event.setCanceled(true);
 		return;
 	}
+	*/
+	
+	
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void NoSapling(SaplingGrowTreeEvent event){
+		System.out.println("tried to sapling grow");
+		//early out if not in galacticraft world
+		if(!(event.world.provider instanceof IGalacticraftWorldProvider))
+			return;
+		event.world.setBlock(event.x, event.y, event.z, Blocks.deadbush,0,2);
+		event.setResult(Result.DENY);	//no growing
+		//event.useItem = Result.DENY;
+        event.setCanceled(true);
+		return;
+		
+	}
+	
 	
 	/* Called when using bucket. If lava, place space lava block; if water bucket, place space water block  
 	*/

@@ -34,15 +34,6 @@ public class BlockPumice extends BlockStone{
     }
 	
 	/*
-	@SideOnly(Side.CLIENT)
-    public int getBlockColor()
-    {
-        double d0 = 0.5D;
-        double d1 = 1.0D;
-        return ColorizerGrass.getGrassColor(d0, d1);
-    }
-    */
-	/*
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z,EntityPlayer p,int n,float xx,float yy,float zz){
 		int l = world.getBlockMetadata(x, y, z);
@@ -106,8 +97,8 @@ public class BlockPumice extends BlockStone{
 	@SideOnly(Side.CLIENT)
     @Override
     public void registerBlockIcons(IIconRegister register){
-        this.face = register.registerIcon("pumice");
+        this.blockIcon = register.registerIcon("pumice");
     }
-	*/
+*/	
 
 }

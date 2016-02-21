@@ -27,8 +27,9 @@ public class SpaceFarmland extends BlockFarmland implements IOxygenReliantBlock{
 	public SpaceFarmland (Material material)
     {
             super();
-            this.setTickRandomly(true);
+            setTickRandomly(true);
             setStepSound(soundTypeGravel);
+            setBlockName("galacticair.spaceFarmland");
             //setCreativeTab(CreativeTabs.tabBlock);
             rand = new Random();
     }
@@ -89,7 +90,6 @@ public class SpaceFarmland extends BlockFarmland implements IOxygenReliantBlock{
     {
         if (world.provider instanceof IGalacticraftWorldProvider)
         {
-        	
             if (OxygenUtil.checkTorchHasOxygen(world, this, x, y, z))
             {
                 this.onOxygenAdded(world, x, y, z);

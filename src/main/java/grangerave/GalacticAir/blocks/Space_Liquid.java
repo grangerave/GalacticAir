@@ -1,5 +1,8 @@
 package grangerave.GalacticAir.blocks;
-
+/*
+ * CAUTION DEPRECATED
+ * 
+ * */
 import java.util.Random;
 
 import micdoodle8.mods.galacticraft.api.block.IOxygenReliantBlock;

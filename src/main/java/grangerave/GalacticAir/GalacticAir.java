@@ -5,6 +5,7 @@ import grangerave.GalacticAir.handlers.*;
 import micdoodle8.mods.galacticraft.core.blocks.GCBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
@@ -34,7 +35,10 @@ public class GalacticAir
     public static Block spaceFarmland;
     public static Block fakeWorkbench;
     public static Block pumice;
-    public static Fluid space_water;
+    public static Block sapling;
+    public static Block furnace;
+    public static Block litfurnace;
+    //public static Fluid space_water;
     public static Block space_water_block;
 	public static Block space_lava_block;
 	//public static Block space_lava;
@@ -53,6 +57,9 @@ public class GalacticAir
         space_lava_block = new Space_Fluid(FluidRegistry.LAVA, Material.lava);
         spaceFarmland = new SpaceFarmland(Material.ground);
         pumice = new BlockPumice();
+        sapling = new SpaceSapling();
+        furnace = new SpaceFurnace(false);
+        litfurnace = new SpaceFurnace(true);
         //fakeWorkbench = new FakeCraftingTable().setBlockName("FakeCraftingTable");
         //Register Blocks with forge
         
@@ -62,10 +69,13 @@ public class GalacticAir
         GameRegistry.registerBlock(space_lava_block, "spaceLavaBlock").setHardness(100F);
         GameRegistry.registerBlock(spaceFarmland, "spaceFarmland").setHardness(0.5F).setHarvestLevel("shovel", 0);
         GameRegistry.registerBlock(pumice, "Pumice").setHardness(1.5F).setResistance(2.0F).setHarvestLevel("pickaxe", 0);
+        GameRegistry.registerBlock(sapling, "Space Sapling").setHardness(0.0F);
+        GameRegistry.registerBlock(furnace, "Space Furnace").setHardness(3.5F).setCreativeTab(CreativeTabs.tabDecorations).setResistance(2.0F).setHarvestLevel("pickaxe", 0);
+        GameRegistry.registerBlock(litfurnace, "Lit Space Furnace").setHardness(3.5F).setLightLevel(0.875F).setResistance(2.0F).setHarvestLevel("pickaxe", 0);
         //GameRegistry.registerBlock(fakeWorkbench, "FakeCraftingTable");
         
         //Register Event Listeners
-        MinecraftForge.EVENT_BUS.register(new PlayerInteractEventHandler());
+        MinecraftForge.EVENT_BUS.register(new GalacticAirEventHandler());
         
         // End Basic Blocks
 
