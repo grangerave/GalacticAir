@@ -36,15 +36,13 @@ public class GalacticAirEventHandler {
 		if(!(event.world.provider instanceof IGalacticraftWorldProvider)){
 			return;
 		}
-		//System.out.println("Hoed metadata: "+event.world.getBlockMetadata(event.x, event.y, event.z));
 		//early out if block isn't dirt
-		if(event.world.getBlock(event.x,event.y,event.z)!=Blocks.dirt){
+		if(event.world.getBlock(event.x,event.y,event.z)!=Blocks.dirt && event.world.getBlock(event.x,event.y,event.z)!=GalacticAir.spaceFarmland){
 			return;
 		}
-		//we must be hoeing dirt then
 		//set the dirt to space farmland
 		event.world.setBlock(event.x, event.y, event.z, GalacticAir.spaceFarmland, 0, 2);
-		event.world.playSoundEffect((double)((float)event.x + 0.5F), (double)((float)event.y + 0.5F), (double)((float)event.z + 0.5F), "step.gravel", 1.0F, 0.2F);
+		event.world.playSoundEffect((double)((float)event.x + 0.5F), (double)((float)event.y + 0.5F), (double)((float)event.z + 0.5F), "step.gravel", 1.0F, 0.05F);
 		//finish the event: return damaged item, etc.
 		event.setResult(Result.ALLOW);
 		return;
