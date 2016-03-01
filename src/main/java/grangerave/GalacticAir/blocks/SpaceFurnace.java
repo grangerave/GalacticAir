@@ -36,9 +36,39 @@ public class SpaceFurnace extends BlockFurnace implements IOxygenReliantBlock {
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
     {
-        return new TileEntitySpaceFurnace();d
+        return new TileEntitySpaceFurnace();
     }
     */
+    
+	/**
+     * Update which block the furnace is using depending on whether or not it is burning
+     */
+	/*
+	@Override
+    public static void updateFurnaceBlockState(boolean b, World world, int x, int y, int z)
+    {
+        int l = world.getBlockMetadata(x, y, z);
+        TileEntity tileentity = world.getTileEntity(x, y, z);
+        //field_149934_M = true;
+
+        if (b)
+        {
+            world.setBlock(x, y, z, GalacticAir.litfurnace);
+        }
+        else
+        {
+            world.setBlock(x, y, z, GalacticAir.furnace);
+        }
+
+        //field_149934_M = false;
+        world.setBlockMetadataWithNotify(x, y, z, l, 2);
+
+        if (tileentity != null)
+        {
+            tileentity.validate();
+            world.setTileEntity(x, y, z, tileentity);
+        }
+    }*/
 	
 	
 	@Override
@@ -76,10 +106,13 @@ public class SpaceFurnace extends BlockFurnace implements IOxygenReliantBlock {
 	@Override
 	public void onOxygenRemoved(World world, int x, int y, int z) {
 		if (world.provider instanceof IGalacticraftWorldProvider){
+			TileEntityFurnace t = (TileEntityFurnace) world.getTileEntity(x, y, z);
+			int l = world.getBlockMetadata(x, y, z);
 			if(lit)
-				world.setBlock(x, y, z, GalacticAir.furnace,world.getBlockMetadata(x, y, z),2);
+				world.setBlock(x, y, z,GalacticAir.furnace, l+1,2);
+			t.currentItemBurnTime=0;
 			//oxygen = false;
-			System.out.println("Oxygen Gone!");
+			//System.out.println("Oxygen Gone!");
 		}
 	}
 

@@ -5,6 +5,8 @@ import micdoodle8.mods.galacticraft.api.world.IGalacticraftWorldProvider;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
@@ -17,6 +19,7 @@ import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 
 
 public class GalacticAirEventHandler {
@@ -124,4 +127,10 @@ public class GalacticAirEventHandler {
 		return;
 	}
 	
+	/*
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void tick(WorldTickEvent event){
+		event.world.loadedTileEntityList.contains(TileEntityFurnace);
+		
+	}*/
 }

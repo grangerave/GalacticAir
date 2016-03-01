@@ -3,10 +3,13 @@ package grangerave.GalacticAir;
 import grangerave.GalacticAir.blocks.*;
 import grangerave.GalacticAir.handlers.*;
 import micdoodle8.mods.galacticraft.core.blocks.GCBlocks;
+import micdoodle8.mods.galacticraft.core.util.ConfigManagerCore;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockGlass;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -34,14 +37,18 @@ public class GalacticAir
     //block definitions
     public static Block spaceFarmland;
     public static Block fakeWorkbench;
-    public static Block pumice;
+    
     public static Block sapling;
     public static Block furnace;
     public static Block litfurnace;
-    //public static Fluid space_water;
+    //cosmetic blocks
+    public static Block pumice;
+    public static Block ribglass;
+    public static Block panel;
+    //liquids
     public static Block space_water_block;
 	public static Block space_lava_block;
-	//public static Block space_lava;
+	
     
     @EventHandler
     public void init(FMLInitializationEvent event)
@@ -52,27 +59,38 @@ public class GalacticAir
         
         //define blocks
         //space_lava = new Space_Liquid(Material.lava);
-        
+        //liquids
         space_water_block = new Space_Fluid(FluidRegistry.WATER, Material.water);
         space_lava_block = new Space_Fluid(FluidRegistry.LAVA, Material.lava);
+        //util
         spaceFarmland = new SpaceFarmland(Material.ground);
-        pumice = new BlockPumice();
         sapling = new SpaceSapling();
         furnace = new SpaceFurnace(false);
         litfurnace = new SpaceFurnace(true);
-        //fakeWorkbench = new FakeCraftingTable().setBlockName("FakeCraftingTable");
-        //Register Blocks with forge
-        
+        //cosmetic stuff
+        pumice = new BlockPumice();
+        ribglass = new RibGlass(Material.glass,false);
+        panel = new BlockPanel(Material.rock);
 
-		//GameRegistry.registerBlock(space_lava, "spaceLava");
+        
+        //Register Blocks with forge
+        //liquids
         GameRegistry.registerBlock(space_water_block, "spaceWaterBlock").setHardness(100F);
         GameRegistry.registerBlock(space_lava_block, "spaceLavaBlock").setHardness(100F);
+        //utility
         GameRegistry.registerBlock(spaceFarmland, "spaceFarmland").setHardness(0.5F).setHarvestLevel("shovel", 0);
-        GameRegistry.registerBlock(pumice, "Pumice").setHardness(1.5F).setResistance(2.0F).setHarvestLevel("pickaxe", 0);
         GameRegistry.registerBlock(sapling, "Space Sapling").setHardness(0.0F);
         GameRegistry.registerBlock(furnace, "Space Furnace").setHardness(3.5F).setCreativeTab(CreativeTabs.tabDecorations).setResistance(2.0F).setHarvestLevel("pickaxe", 0);
         GameRegistry.registerBlock(litfurnace, "Lit Space Furnace").setHardness(3.5F).setLightLevel(0.875F).setResistance(2.0F).setHarvestLevel("pickaxe", 0);
         //GameRegistry.registerBlock(fakeWorkbench, "FakeCraftingTable");
+        //cosmetic
+        GameRegistry.registerBlock(pumice, "Pumice").setHardness(1.5F).setResistance(2.0F).setHarvestLevel("pickaxe", 0);
+        GameRegistry.registerBlock(ribglass, "Ribbed Glass").setHardness(0.5F);
+        GameRegistry.registerBlock(panel, "Plastic Panel").setHardness(0.8F);
+        
+        
+        //Register Tile entities
+        GameRegistry.registerTileEntity(grangerave.GalacticAir.tile.TileEntitySpaceFurnace.class, "spaceFurnace");
         
         //Register Event Listeners
         MinecraftForge.EVENT_BUS.register(new GalacticAirEventHandler());
@@ -85,6 +103,20 @@ public class GalacticAir
     @EventHandler
     public void postInit(FMLPostInitializationEvent event){
     	GCBlocks.blockMoon.setStepSound(Block.soundTypeSand);
+    	GCBlocks.fallenMeteor.setHarvestLevel("pickaxe", 1);
+    	/*
+    	String[] sealIDs = ConfigManagerCore.sealableIDs;
+    	boolean flag = false;
+    	for(int i=0;i<sealIDs.length;i++){
+    		System.out.println(ConfigManagerCore.sealableIDs[i]);
+    		if(sealIDs[i]=="galacticair:RibGlass"){
+    			flag = true;
+    			break;
+    		}
+    	}
+    	if(!flag)
+    		ConfigManagerCore.sealableIDs= sealIDs.
+    		*/
     }
 
 }
