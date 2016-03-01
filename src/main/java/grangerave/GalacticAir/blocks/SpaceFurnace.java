@@ -10,6 +10,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFurnace;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -21,6 +22,7 @@ import micdoodle8.mods.galacticraft.core.util.OxygenUtil;
 
 public class SpaceFurnace extends BlockFurnace implements IOxygenReliantBlock {
 	private boolean lit = false;
+	private static boolean softBreak = false;
 	
 	public SpaceFurnace(boolean b) {
 		super(b);
@@ -32,49 +34,70 @@ public class SpaceFurnace extends BlockFurnace implements IOxygenReliantBlock {
 			setBlockName("SpaceFurnace");
 	}
 
-	/*
+
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
     {
         return new TileEntitySpaceFurnace();
     }
-    */
     
 	/**
      * Update which block the furnace is using depending on whether or not it is burning
      */
-	/*
+	
 	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float xx, float yy, float zz)
+    {
+        if (world.isRemote)
+        {
+            return true;
+        }
+        else
+        {
+            TileEntitySpaceFurnace tileentityfurnace = (TileEntitySpaceFurnace)world.getTileEntity(x, y, z);
+
+            if (tileentityfurnace != null)
+            {
+                player.func_146101_a(tileentityfurnace);
+            }
+
+            return true;
+        }
+    }
+	
     public static void updateFurnaceBlockState(boolean b, World world, int x, int y, int z)
     {
         int l = world.getBlockMetadata(x, y, z);
         TileEntity tileentity = world.getTileEntity(x, y, z);
-        //field_149934_M = true;
-
+        
+        softBreak = true;	//we're just replacing the block- no need to spit out contents
         if (b)
-        {
             world.setBlock(x, y, z, GalacticAir.litfurnace);
-        }
         else
-        {
             world.setBlock(x, y, z, GalacticAir.furnace);
-        }
 
-        //field_149934_M = false;
+        softBreak = false;
+        System.out.println(l);
         world.setBlockMetadataWithNotify(x, y, z, l, 2);
 
-        if (tileentity != null)
+        if (tileentity != null)	//reassociate tile entity related to the furnace
         {
             tileentity.validate();
             world.setTileEntity(x, y, z, tileentity);
         }
-    }*/
+    }
 	
+    @Override
+    public void breakBlock(World world, int x, int y, int z, Block b, int rand){
+    	if(!softBreak)	//make sure we're not just replacing the block with a version of itself
+    		super.breakBlock(world, x, y, z, b, rand);	
+    	
+    }
 	
 	@Override
-    public void onBlockAdded(World par1World, int par2, int par3, int par4){
-		//immediately check if oxygen or not
-		this.checkOxygen(par1World, par2, par3, par4);
+    public void onBlockAdded(World world, int x, int y, int z){
+		super.onBlockAdded(world, x, y, z);
+		world.scheduleBlockUpdate(x, y, z, this, world.rand.nextInt(30)+1);
 	}
 	
 	@Override
@@ -99,28 +122,23 @@ public class SpaceFurnace extends BlockFurnace implements IOxygenReliantBlock {
     }
 	
 	@Override
-    public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, Block par5){
-		par1World.scheduleBlockUpdate(par2, par3, par4, this, par1World.rand.nextInt(30));
+    public void onNeighborBlockChange(World par1World, int x, int y, int z, Block par5){
+		par1World.scheduleBlockUpdate(x, y, z, this, par1World.rand.nextInt(30)+1);
 	}
 	
 	@Override
 	public void onOxygenRemoved(World world, int x, int y, int z) {
-		if (world.provider instanceof IGalacticraftWorldProvider){
-			TileEntityFurnace t = (TileEntityFurnace) world.getTileEntity(x, y, z);
-			int l = world.getBlockMetadata(x, y, z);
+		if (world.provider instanceof IGalacticraftWorldProvider){//remove oxygen
+			((TileEntitySpaceFurnace) world.getTileEntity(x, y, z)).oxygen=false;
 			if(lit)
-				world.setBlock(x, y, z,GalacticAir.furnace, l+1,2);
-			t.currentItemBurnTime=0;
-			//oxygen = false;
-			//System.out.println("Oxygen Gone!");
+				this.updateFurnaceBlockState(false, world, x, y, z);
 		}
 	}
 
 	@Override
 	public void onOxygenAdded(World world, int x, int y, int z) {
-		if (world.provider instanceof IGalacticraftWorldProvider){
-			//oxygen = true;
-			//System.out.println("Oxygen Back!");
+		if (world.provider instanceof IGalacticraftWorldProvider){	//reset oxygen
+			((TileEntitySpaceFurnace) world.getTileEntity(x, y, z)).oxygen=true;
 		}
 	}
 	
