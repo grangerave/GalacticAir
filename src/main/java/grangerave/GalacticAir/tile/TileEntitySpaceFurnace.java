@@ -1,8 +1,14 @@
 package grangerave.GalacticAir.tile;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import grangerave.GalacticAir.GalacticAir;
 import grangerave.GalacticAir.blocks.SpaceFurnace;
+import grangerave.GalacticAir.blocks.Space_Fluid;
+import micdoodle8.mods.galacticraft.core.GalacticraftCore;
 import micdoodle8.mods.galacticraft.core.util.OxygenUtil;
 import net.minecraft.block.BlockFurnace;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -89,13 +95,28 @@ public class TileEntitySpaceFurnace extends TileEntityFurnace{
         if (!this.worldObj.isRemote)
         {
         	ticks++;
-        	if(this.ticks %800 == 0){	//check oxygen
+        	if(ticks %500 == 0){	//check oxygen
         		ticks = 0;
         		oxygen = OxygenUtil.isAABBInBreathableAirBlock(this.worldObj, AxisAlignedBB.getBoundingBox(this.xCoord - 1, this.yCoord - 1, this.zCoord - 1, this.xCoord + 2, this.yCoord + 2, this.zCoord + 2));
         		if(!oxygen){	//turn the furnace off!
         			this.furnaceBurnTime = 0;
         			this.furnaceCookTime = 0;
         			this.currentItemBurnTime=0;
+        		}
+        		
+        	}
+        	if(ticks%200 == 0 &&  this.furnaceBurnTime !=0){	//if in oxygen, and cooking, make a smoke poof//
+        		//spawn smoke particle near front of furnace
+        		if(worldObj.rand.nextBoolean()){
+        			int i = 0;
+        			int j = 0;
+        			if(blockMetadata<4){
+        				j = -1 + (blockMetadata%2)*2;
+        			}else{
+        				i = -1 + (blockMetadata%2)*2;
+        			}
+        			//Space_Fluid.destroyFx(GalacticraftCore.proxy.getClientWorld(),xCoord+i,yCoord,zCoord+j,8);
+        			worldObj.setBlock(xCoord+i, yCoord, zCoord+j,GalacticAir.smoke);
         		}
         	}
         	
@@ -125,7 +146,7 @@ public class TileEntitySpaceFurnace extends TileEntityFurnace{
                 {
                     ++this.furnaceCookTime;
 
-                    if (this.furnaceCookTime == 200)
+                    if (this.furnaceCookTime == 400)
                     {
                         this.furnaceCookTime = 0;
                         this.smeltItem();
@@ -151,6 +172,13 @@ public class TileEntitySpaceFurnace extends TileEntityFurnace{
         }
     }
     
+    
+    @SideOnly(Side.CLIENT)
+    @Override
+    public int getCookProgressScaled(int i)
+    {
+        return this.furnaceCookTime * i/ 400;
+    }
 
     //check if smelting is possible with current item configurations
 	private boolean canSmelt()

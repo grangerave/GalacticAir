@@ -150,7 +150,7 @@ public class Space_Fluid extends BlockFluidClassic implements IOxygenReliantBloc
 		}
 	}
 	
-	private void destroyFx(World world,int x, int y, int z,int num){
+	public static void destroyFx(World world,int x, int y, int z,int num){
 		//spawn a poof of particles client side
 		if(world.isRemote){//client side only
 			for (int l = 0; l < num; ++l)

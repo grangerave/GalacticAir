@@ -4,12 +4,16 @@ import grangerave.GalacticAir.GalacticAir;
 import micdoodle8.mods.galacticraft.api.world.IGalacticraftWorldProvider;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.event.terraingen.SaplingGrowTreeEvent;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -17,6 +21,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import cpw.mods.fml.common.eventhandler.Event.Result;
+import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
@@ -42,7 +47,7 @@ public class GalacticAirEventHandler {
 		}
 		//set the dirt to space farmland
 		event.world.setBlock(event.x, event.y, event.z, GalacticAir.spaceFarmland, 0, 2);
-		event.world.playSoundEffect((double)((float)event.x + 0.5F), (double)((float)event.y + 0.5F), (double)((float)event.z + 0.5F), "step.gravel", 1.0F, 0.05F);
+		event.world.playSoundEffect((double)((float)event.x + 0.5F), (double)((float)event.y + 0.5F), (double)((float)event.z + 0.5F), "step.gravel", 0.2F, 1.0F);
 		//finish the event: return damaged item, etc.
 		event.setResult(Result.ALLOW);
 		return;
@@ -64,7 +69,36 @@ public class GalacticAirEventHandler {
 		return;
 	}
 	*/
-	
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void placeItemOverride(PlayerInteractEvent event){
+		if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+			//early out if not in galacticraft world
+			if(!(event.world.provider instanceof IGalacticraftWorldProvider))
+				return;
+			ItemStack stack = event.entityPlayer.getCurrentEquippedItem();
+			if(stack==null || stack.getItem()==null) {
+                return;	//return if not holding any items
+            }
+			
+			if(stack.getItem()== Item.getItemFromBlock(Blocks.furnace)){
+				//holding a furnace
+				if(event.world.isRemote){	//deny event on client
+					event.useItem = event.useItem.DENY;
+					event.useBlock = event.useBlock.DENY;
+					event.setResult(Event.Result.DENY);
+				}else{	//place block on server, then deny event
+					boolean flag = new ItemStack(GalacticAir.furnace, stack.stackSize).tryPlaceItemIntoWorld(event.entityPlayer, event.world, event.x, event.y, event.z, event.face, 0F, 0F, 0F);
+					System.out.println(flag);
+					event.useItem = event.useItem.DENY;
+					event.useBlock = event.useBlock.DENY;
+					event.setResult(Event.Result.DENY);
+					event.entityPlayer.setCurrentItemOrArmor(0, new ItemStack(stack.getItem(),stack.stackSize-1));
+					//event.setCanceled(true);
+					//return;
+				}
+			}
+		}
+	}
 	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void NoSapling(SaplingGrowTreeEvent event){

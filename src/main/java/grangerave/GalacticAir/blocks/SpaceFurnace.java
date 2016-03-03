@@ -41,10 +41,6 @@ public class SpaceFurnace extends BlockFurnace implements IOxygenReliantBlock {
         return new TileEntitySpaceFurnace();
     }
     
-	/**
-     * Update which block the furnace is using depending on whether or not it is burning
-     */
-	
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float xx, float yy, float zz)
     {
@@ -65,6 +61,7 @@ public class SpaceFurnace extends BlockFurnace implements IOxygenReliantBlock {
         }
     }
 	
+	//switch between burning/not burning block states
     public static void updateFurnaceBlockState(boolean b, World world, int x, int y, int z)
     {
         int l = world.getBlockMetadata(x, y, z);
@@ -75,9 +72,8 @@ public class SpaceFurnace extends BlockFurnace implements IOxygenReliantBlock {
             world.setBlock(x, y, z, GalacticAir.litfurnace);
         else
             world.setBlock(x, y, z, GalacticAir.furnace);
-
         softBreak = false;
-        System.out.println(l);
+        
         world.setBlockMetadataWithNotify(x, y, z, l, 2);
 
         if (tileentity != null)	//reassociate tile entity related to the furnace

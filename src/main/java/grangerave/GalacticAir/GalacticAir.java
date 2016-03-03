@@ -45,9 +45,10 @@ public class GalacticAir
     public static Block pumice;
     public static Block ribglass;
     public static Block panel;
-    //liquids
+    //liquids/gases
     public static Block space_water_block;
 	public static Block space_lava_block;
+	public static Block smoke;
 	
     
     @EventHandler
@@ -67,10 +68,11 @@ public class GalacticAir
         sapling = new SpaceSapling();
         furnace = new SpaceFurnace(false);
         litfurnace = new SpaceFurnace(true);
+        smoke = new BlockSmoke();
         //cosmetic stuff
         pumice = new BlockPumice();
-        ribglass = new RibGlass(Material.glass,false);
-        panel = new BlockPanel(Material.rock);
+        //ribglass = new RibGlass(Material.glass,false);
+        //panel = new BlockPanel(Material.rock);
 
         
         //Register Blocks with forge
@@ -85,8 +87,9 @@ public class GalacticAir
         //GameRegistry.registerBlock(fakeWorkbench, "FakeCraftingTable");
         //cosmetic
         GameRegistry.registerBlock(pumice, "Pumice").setHardness(1.5F).setResistance(2.0F).setHarvestLevel("pickaxe", 0);
-        GameRegistry.registerBlock(ribglass, "Ribbed Glass").setHardness(0.5F);
-        GameRegistry.registerBlock(panel, "Plastic Panel").setHardness(0.8F);
+        GameRegistry.registerBlock(new RibGlass(Material.glass,false), "Ribbed Glass").setHardness(0.5F);
+        GameRegistry.registerBlock(new BlockPanel(Material.rock), "Plastic Panel").setHardness(0.8F);
+        GameRegistry.registerBlock(smoke, "BlockSmoke").setLightOpacity(1).setHardness(4.0F);
         
         
         //Register Tile entities
