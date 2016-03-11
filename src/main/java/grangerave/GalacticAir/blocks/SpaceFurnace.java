@@ -125,7 +125,7 @@ public class SpaceFurnace extends BlockFurnace implements IOxygenReliantBlock {
 	@Override
 	public void onOxygenRemoved(World world, int x, int y, int z) {
 		if (world.provider instanceof IGalacticraftWorldProvider){//remove oxygen
-			((TileEntitySpaceFurnace) world.getTileEntity(x, y, z)).oxygen=false;
+			((TileEntitySpaceFurnace) world.getTileEntity(x, y, z)).setOxygen(false);
 			if(lit)
 				this.updateFurnaceBlockState(false, world, x, y, z);
 		}
@@ -134,7 +134,7 @@ public class SpaceFurnace extends BlockFurnace implements IOxygenReliantBlock {
 	@Override
 	public void onOxygenAdded(World world, int x, int y, int z) {
 		if (world.provider instanceof IGalacticraftWorldProvider){	//reset oxygen
-			((TileEntitySpaceFurnace) world.getTileEntity(x, y, z)).oxygen=true;
+			((TileEntitySpaceFurnace) world.getTileEntity(x, y, z)).setOxygen(true);
 		}
 	}
 	

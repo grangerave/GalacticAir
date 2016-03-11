@@ -2,6 +2,7 @@ package grangerave.GalacticAir.tile;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import glenn.gasesframework.GasesFramework;
 import grangerave.GalacticAir.GalacticAir;
 import grangerave.GalacticAir.blocks.SpaceFurnace;
 import grangerave.GalacticAir.blocks.Space_Fluid;
@@ -81,6 +82,15 @@ public class TileEntitySpaceFurnace extends TileEntityFurnace{
         return this.furnaceBurnTime > 0;
     }
     
+    public void setOxygen(boolean b){
+    	oxygen = b;
+    	if(!oxygen){
+    		this.furnaceBurnTime = 0;
+			this.furnaceCookTime = 0;
+			this.currentItemBurnTime=0;
+    	}
+    }
+    
     @Override
     public void updateEntity()	//called on update tick
     {
@@ -97,13 +107,7 @@ public class TileEntitySpaceFurnace extends TileEntityFurnace{
         	ticks++;
         	if(ticks %500 == 0){	//check oxygen
         		ticks = 0;
-        		oxygen = OxygenUtil.isAABBInBreathableAirBlock(this.worldObj, AxisAlignedBB.getBoundingBox(this.xCoord - 1, this.yCoord - 1, this.zCoord - 1, this.xCoord + 2, this.yCoord + 2, this.zCoord + 2));
-        		if(!oxygen){	//turn the furnace off!
-        			this.furnaceBurnTime = 0;
-        			this.furnaceCookTime = 0;
-        			this.currentItemBurnTime=0;
-        		}
-        		
+        		setOxygen(OxygenUtil.isAABBInBreathableAirBlock(this.worldObj, AxisAlignedBB.getBoundingBox(this.xCoord - 1, this.yCoord - 1, this.zCoord - 1, this.xCoord + 2, this.yCoord + 2, this.zCoord + 2)));
         	}
         	if(ticks%200 == 0 &&  this.furnaceBurnTime !=0){	//if in oxygen, and cooking, make a smoke poof//
         		//spawn smoke particle near front of furnace
@@ -116,7 +120,15 @@ public class TileEntitySpaceFurnace extends TileEntityFurnace{
         				i = -1 + (blockMetadata%2)*2;
         			}
         			//Space_Fluid.destroyFx(GalacticraftCore.proxy.getClientWorld(),xCoord+i,yCoord,zCoord+j,8);
-        			worldObj.setBlock(xCoord+i, yCoord, zCoord+j,GalacticAir.smoke);
+        			
+        			//check in front of
+        			if(worldObj.getBlock(xCoord+i, yCoord, zCoord+j).isAir(worldObj, xCoord+i, yCoord, zCoord+j))
+        				worldObj.setBlock(xCoord+i, yCoord, zCoord+j,GasesFramework.registry.getGasBlock(GasesFramework.gasTypeSmoke),0,2);
+        			else if(worldObj.getBlock(xCoord+i, yCoord-1, zCoord+j).isAir(worldObj, xCoord+i, yCoord-1, zCoord+j))
+        				worldObj.setBlock(xCoord+i, yCoord-1, zCoord+j,GasesFramework.registry.getGasBlock(GasesFramework.gasTypeSmoke),0,2);
+        			else if(worldObj.getBlock(xCoord+2*i, yCoord, zCoord+2*j).isAir(worldObj, xCoord+2*i, yCoord, zCoord+2*j))
+        				worldObj.setBlock(xCoord+2*i, yCoord, zCoord+2*j,GasesFramework.registry.getGasBlock(GasesFramework.gasTypeSmoke),0,2);
+        			//else if((worldObj.getBlock(xCoord+i, yCoord, zCoord+j)) instanceof BlockSmoke)
         		}
         	}
         	
